@@ -5,6 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+:warning: The project has been migrated from the [Calypsonet Terminal Reader API](https://github.com/calypsonet/calypsonet-terminal-reader-java-api)
+GitHub repository.
+### Added
+- `ReaderApiFactory` centralizes the methods used to create instances of the various interfaces of the API.
+- `BasicCardSelector` can be used to create generic card selection filters based on card communication 
+  protocol or power-on data.
+- `IsoCardSelector` lets you create ISO card selection filters based on card communication protocol and 
+  power-on data, as well as AIDs, and define selection strategies (e.g. first occurrence, FCI reading, etc.).
+- `IsoSmartCard` extends the `SmartCard` interface and provides access to data from the **Select Application** ISO 
+  command response.
+### Changed
+- The project license is now "MIT License" (previously "Eclipse Public License 2.0").
+- CI: The Gradle plugin `org.eclipse.keyple:keyple-gradle:0.2.+` has been replaced
+  by `org.eclipse.keypop:keypop-gradle:0.1.+`.
+- Renamed:
+  - Artifact `org.calypsonet.terminal:calypsonet-terminal-reader-java-api` -> `org.eclipse.keypop:keypop-reader-java-api`
+  - Package `org.calypsonet.terminal.reader` -> `org.eclipse.keypop.reader`
+  - Interface `CardSelection` -> `CardSelectionExtension`
+- Moved:
+  - Method `SmartCard.getSelectApplicationResponse()` ->  `IsoSmartCard.getSelectApplicationResponse()`
+- Method signature refactored:
+  - `CardSelectionManager.prepareSelection(CardSelection cardSelection)` -> `CardSelectionManager.prepareSelection(CardSelector<?> cardSelector, CardSelectionExtension cardSelectionExtension)`
 
 ## [1.3.0] - 2023-05-22
 ### Added
