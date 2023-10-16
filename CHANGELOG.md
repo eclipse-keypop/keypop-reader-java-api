@@ -27,6 +27,10 @@ GitHub repository.
   - Method `SmartCard.getSelectApplicationResponse()` ->  `IsoSmartCard.getSelectApplicationResponse()`
 - Method signature refactored:
   - `CardSelectionManager.prepareSelection(CardSelection cardSelection)` -> `CardSelectionManager.prepareSelection(CardSelector<?> cardSelector, CardSelectionExtension cardSelectionExtension)`
+  - `CardSelectionManager.scheduleCardSelectionScenario(ObservableCardReader observableCardReader, DetectionMode 
+     detectionMode, NotificationMode notificationMode)` 
+     -> `CardSelectionManager.scheduleCardSelectionScenario(ObservableCardReader observableCardReader, NotificationMode 
+     notificationMode)`
 
 ## [1.3.0] - 2023-05-22
 ### Added
