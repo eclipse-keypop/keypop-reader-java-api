@@ -1,4 +1,4 @@
-/*
+/* **************************************************************************************
  * Copyright (c) 2023 Calypso Networks Association https://calypsonet.org/
  *
  * This file is part of Eclipse Keypop.
@@ -7,7 +7,7 @@
  * it under the terms of the MIT License. A copy of the License is located at
  *
  * http://opensource.org/licenses/MIT
- */
+ ************************************************************************************** */
 package org.eclipse.keypop.reader.selection;
 
 import org.eclipse.keypop.reader.CardCommunicationException;
@@ -146,21 +146,16 @@ public interface CardSelectionManager {
    * <p>{@link CardReaderEvent} are pushed to the observer according to the specified notification
    * mode.
    *
-   * <p>The reader's behavior at the end of the card processing is defined by the specified {@link
-   * ObservableCardReader.DetectionMode}.
-   *
    * <p>The result of the scenario execution will be analyzed by {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)}.
    *
    * @param observableCardReader The reader with which the card communication is carried out.
-   * @param detectionMode The card detection mode to use when searching for a card.
    * @param notificationMode The card notification mode to use when a card is detected.
    * @throws IllegalArgumentException If one of the parameters is null.
    * @since 1.0.0
    */
   void scheduleCardSelectionScenario(
       ObservableCardReader observableCardReader,
-      ObservableCardReader.DetectionMode detectionMode,
       ObservableCardReader.NotificationMode notificationMode);
 
   /**
