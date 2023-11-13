@@ -10,7 +10,7 @@ functionalities related to specific card operations and structures.
 ## Documentation & Contribution Guide
 
 The full documentation, including the **user guide**, **download information** and **contribution guide**, is available
-on the Keyple website [keypop.org](https://keypop.org).
+on the Keyple website [keypop.org](https://eclipse-keypop.github.io/keypop-website/).
 
 ## API documentation
 
