@@ -21,18 +21,34 @@ cd $repository_name
 echo "Checkout gh-pages branch..."
 git checkout -f gh-pages
 
-echo "Delete existing SNAPSHOT directory..."
-rm -rf *-SNAPSHOT
-
-echo "Delete existing RC directories in case of final release..."
-rm -rf $version-rc*
+echo "Delete existing SNAPSHOT directories except the current one..."
+for snapshot in *-SNAPSHOT/; do
+    if [ "$snapshot" != "$version/" ]; then
+        echo "Removing old SNAPSHOT: $snapshot"
+        rm -rf "$snapshot"
+    fi
+done
 
 echo "Create target directory $version..."
 mkdir $version
 
 echo "Copy javadoc files..."
 cp -rf ../build/docs/javadoc/* $version/
+# Create latest-stable copy if not a SNAPSHOT version
+if [ "$is_snapshot" = false ]; then
+    echo "Creating latest-stable directory..."
+    rm -rf latest-stable
+    mkdir latest-stable
+    cp -rf $version/* latest-stable/
 
+    echo "Creating robots.txt..."
+    cat > robots.txt << EOF
+User-agent: *
+Allow: /
+Allow: /latest-stable/
+Disallow: /*/[0-9]*/
+EOF
+fi
 echo "Update versions list..."
 echo "| Version | Documents |" > list_versions.md
 echo "|:---:|---|" >> list_versions.md
@@ -40,10 +56,17 @@ echo "|:---:|---|" >> list_versions.md
 # Get the list of directories sorted by version number
 sorted_dirs=$(ls -d [0-9]*/ | cut -f1 -d'/' | sort -Vr)
 
+# Find the latest stable version (first non-SNAPSHOT, non-RC version)
+latest_stable=$(ls -d [0-9]*/ | grep -v SNAPSHOT | grep -v "\-rc" | cut -f1 -d'/' | sort -Vr | head -n1)
+
 # Loop through each sorted directory
 for directory in $sorted_dirs
 do
-  echo "| $directory | [API documentation]($directory) |" >> list_versions.md
+    # If this is the stable version, write latest-stable entry first
+    if [ "$directory" = "$latest_stable" ]; then
+        echo "| latest-stable ($latest_stable) | [API documentation](latest-stable) |" >> list_versions.md
+    fi
+    echo "| $directory | [API documentation]($directory) |" >> list_versions.md
 done
 
 echo "Computed all versions:"
