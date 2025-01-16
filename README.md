@@ -10,11 +10,11 @@ functionalities related to specific card operations and structures.
 ## Documentation & Contribution Guide
 
 The full documentation, including the **user guide**, **download information** and **contribution guide**, is available
-on the Keypop website [keypop.org](https://eclipse-keypop.github.io/keypop-website/).
+on the Keypop website [keypop.org](https://keypop.org/).
 
 ## API documentation
 
-API Javadoc is available [here](https://eclipse-keypop.github.io/keypop-reader-java-api).
+API Javadoc is available [here](https://docs.keypop.org/keypop-reader-java-api).
 
 API documentation and class diagram is available
 [here](https://terminal-api.calypsonet.org/apis/calypsonet-terminal-reader-api/).
