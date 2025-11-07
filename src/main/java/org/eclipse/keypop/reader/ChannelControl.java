@@ -1,5 +1,5 @@
 /* **************************************************************************************
- * Copyright (c) 2023 Calypso Networks Association https://calypsonet.org/
+ * Copyright (c) 2025 Calypso Networks Association https://calypsonet.org/
  *
  * See the NOTICE file(s) distributed with this work for additional information
  * regarding copyright ownership.
@@ -12,19 +12,25 @@
 package org.eclipse.keypop.reader;
 
 /**
- * Reader API properties.
+ * Policy for managing the physical channel after a card request is executed.
  *
- * @since 1.0.0
+ * @since 2.1.0
  */
-public final class ReaderApiProperties {
+public enum ChannelControl {
 
   /**
-   * API version: {@value}
+   * Leaves the physical channel open.
    *
-   * @since 1.0.0
+   * @since 2.1.0
    */
-  public static final String VERSION = "2.1";
+  KEEP_OPEN,
 
-  /** Private constructor */
-  private ReaderApiProperties() {}
+  /**
+   * Terminates communication with the card.<br>
+   * The physical channel closes instantly or a card removal sequence is initiated depending on the
+   * observation mode.
+   *
+   * @since 2.1.0
+   */
+  CLOSE_AFTER
 }
