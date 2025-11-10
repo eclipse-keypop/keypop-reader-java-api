@@ -11,7 +11,10 @@
  ************************************************************************************** */
 package org.eclipse.keypop.reader.transaction.spi;
 
+import org.eclipse.keypop.reader.CardCommunicationException;
 import org.eclipse.keypop.reader.ChannelControl;
+import org.eclipse.keypop.reader.InvalidCardResponseException;
+import org.eclipse.keypop.reader.ReaderCommunicationException;
 import org.eclipse.keypop.reader.selection.spi.SmartCard;
 
 /**
@@ -44,6 +47,9 @@ public interface CardTransactionManager<T extends CardTransactionManager<T>> {
    * @param channelControl Policy for managing the physical channel after executing commands to the
    *     card.
    * @return The current instance.
+   * @throws ReaderCommunicationException If a communication error with the card reader occurs.
+   * @throws CardCommunicationException If a communication error with the card occurs.
+   * @throws InvalidCardResponseException If a command returns an unexpected status.
    * @since 2.1.0
    */
   T processCommands(ChannelControl channelControl);
