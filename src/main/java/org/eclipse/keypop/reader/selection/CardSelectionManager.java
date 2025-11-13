@@ -90,7 +90,11 @@ public interface CardSelectionManager {
    * restarting the card connection sequence.
    *
    * @since 1.0.0
-   * @deprecated TODO
+   * @deprecated Replaced by explicit {@link ChannelControl} parameter in {@link
+   *     #exportCardSelectionScenario(ChannelControl)}, {@link
+   *     #processCardSelectionScenario(CardReader, ChannelControl)}, {@link
+   *     #scheduleCardSelectionScenario(ObservableCardReader, ObservableCardReader.NotificationMode,
+   *     ChannelControl)} methods.
    */
   @Deprecated
   void prepareReleaseChannel();
@@ -128,12 +132,14 @@ public interface CardSelectionManager {
    * Imports a previously exported card selection scenario in string format.
    *
    * <p>Prerequisite: the string must have been exported from a card selection manager via the
-   * method {@link #exportCardSelectionScenario()}.
+   * {@link #exportCardSelectionScenario()}, or {@link #exportCardSelectionScenario(ChannelControl)}
+   * method.
    *
    * @param cardSelectionScenario The string containing the exported card selection scenario.
    * @return The index of the last imported selection in the card selection scenario.
    * @throws IllegalArgumentException If the string is null or malformed.
    * @see #exportCardSelectionScenario()
+   * @see #exportCardSelectionScenario(ChannelControl)
    * @since 1.1.0
    */
   int importCardSelectionScenario(String cardSelectionScenario);
@@ -168,8 +174,8 @@ public interface CardSelectionManager {
    * @throws ReaderCommunicationException If the communication with the reader has failed.
    * @throws CardCommunicationException If communication with the card has failed, or if the status
    *     word check is enabled in the card request, and the card has returned an unexpected code.
-   * @throws InvalidCardResponseException If the card returned invalid data during the selection
-   *     process.
+   * @throws org.eclipse.keypop.reader.InvalidCardResponseException If the card returned invalid
+   *     data during the selection process.
    * @since 2.1.0
    */
   CardSelectionResult processCardSelectionScenario(
@@ -239,11 +245,13 @@ public interface CardSelectionManager {
    * {@link #importProcessedCardSelectionScenario(String)}.
    *
    * <p>Prerequisite: the card selection scenario must first have been processed via the {@link
-   * #processCardSelectionScenario(CardReader)} or {@link
+   * #processCardSelectionScenario(CardReader)}, or {@link #processCardSelectionScenario(CardReader,
+   * ChannelControl)}, or {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} method.
    *
    * <p>Caution: if the local environment does not have the card extensions involved in the
-   * selection scenario, then methods {@link #processCardSelectionScenario(CardReader)} and {@link
+   * selection scenario, then methods {@link #processCardSelectionScenario(CardReader)}, {@link
+   * #processCardSelectionScenario(CardReader, ChannelControl)} and {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} will not be able to
    * interpret the content of the result, and consequently, the content of the result object {@link
    * CardSelectionResult} will not contain any active selection. It will then be necessary to export
