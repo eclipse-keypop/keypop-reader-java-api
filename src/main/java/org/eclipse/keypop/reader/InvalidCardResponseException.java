@@ -16,8 +16,7 @@ package org.eclipse.keypop.reader;
  *
  * @since 2.1.0
  */
-public class InvalidCardResponseException
-    extends org.eclipse.keypop.reader.selection.InvalidCardResponseException {
+public class InvalidCardResponseException extends RuntimeException {
 
   /**
    * @param message The message to identify the exception context.

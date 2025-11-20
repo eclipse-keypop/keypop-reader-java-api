@@ -11,7 +11,12 @@
  ************************************************************************************** */
 package org.eclipse.keypop.reader.selection;
 
-import org.eclipse.keypop.reader.*;
+import org.eclipse.keypop.reader.CardCommunicationException;
+import org.eclipse.keypop.reader.CardReader;
+import org.eclipse.keypop.reader.CardReaderEvent;
+import org.eclipse.keypop.reader.ObservableCardReader;
+import org.eclipse.keypop.reader.ReaderApiFactory;
+import org.eclipse.keypop.reader.ReaderCommunicationException;
 import org.eclipse.keypop.reader.selection.spi.CardSelectionExtension;
 
 /**
@@ -90,13 +95,7 @@ public interface CardSelectionManager {
    * restarting the card connection sequence.
    *
    * @since 1.0.0
-   * @deprecated Replaced by explicit {@link ChannelControl} parameter in {@link
-   *     #exportCardSelectionScenario(ChannelControl)}, {@link
-   *     #processCardSelectionScenario(CardReader, ChannelControl)}, {@link
-   *     #scheduleCardSelectionScenario(ObservableCardReader, ObservableCardReader.NotificationMode,
-   *     ChannelControl)} methods.
    */
-  @Deprecated
   void prepareReleaseChannel();
 
   /**
@@ -108,38 +107,19 @@ public interface CardSelectionManager {
    * @return A non-null string.
    * @see #importCardSelectionScenario(String)
    * @since 1.1.0
-   * @deprecated Use {@link #exportCardSelectionScenario(ChannelControl)} instead.
    */
-  @Deprecated
   String exportCardSelectionScenario();
-
-  /**
-   * Exports the content of the current prepared card selection scenario in string format.
-   *
-   * <p>This string can be imported into the same or another card selection manager via the method
-   * {@link #importCardSelectionScenario(String)}.
-   *
-   * @param channelControl Policy for managing the physical channel after executing commands to the
-   *     card.
-   * @return A non-null string.
-   * @throws IllegalArgumentException If the provided channel control is null.
-   * @see #importCardSelectionScenario(String)
-   * @since 2.1.0
-   */
-  String exportCardSelectionScenario(ChannelControl channelControl);
 
   /**
    * Imports a previously exported card selection scenario in string format.
    *
    * <p>Prerequisite: the string must have been exported from a card selection manager via the
-   * {@link #exportCardSelectionScenario()}, or {@link #exportCardSelectionScenario(ChannelControl)}
-   * method.
+   * method {@link #exportCardSelectionScenario()}.
    *
    * @param cardSelectionScenario The string containing the exported card selection scenario.
    * @return The index of the last imported selection in the card selection scenario.
    * @throws IllegalArgumentException If the string is null or malformed.
    * @see #exportCardSelectionScenario()
-   * @see #exportCardSelectionScenario(ChannelControl)
    * @since 1.1.0
    */
   int importCardSelectionScenario(String cardSelectionScenario);
@@ -152,34 +132,13 @@ public interface CardSelectionManager {
    * @return A non-null reference.
    * @throws IllegalArgumentException If the provided reader is null.
    * @throws ReaderCommunicationException If the communication with the reader has failed.
-   * @throws CardCommunicationException If communication with the card has failed, or if the status
-   *     word check is enabled in the card request, and the card has returned an unexpected code.
+   * @throws CardCommunicationException If communication with the card has failed or if the status
+   *     word check is enabled in the card request and the card has returned an unexpected code.
    * @throws InvalidCardResponseException If the card returned invalid data during the selection
    *     process.
    * @since 1.0.0
-   * @deprecated Use {@link #processCardSelectionScenario(CardReader, ChannelControl)} instead.
    */
-  @Deprecated
   CardSelectionResult processCardSelectionScenario(CardReader reader);
-
-  /**
-   * Explicitly executes a previously prepared card selection scenario and returns the card
-   * selection result.
-   *
-   * @param reader The reader to communicate with the card.
-   * @param channelControl Policy for managing the physical channel after executing commands to the
-   *     card.
-   * @return A non-null reference.
-   * @throws IllegalArgumentException If the provided reader or channel control is null.
-   * @throws ReaderCommunicationException If the communication with the reader has failed.
-   * @throws CardCommunicationException If communication with the card has failed, or if the status
-   *     word check is enabled in the card request, and the card has returned an unexpected code.
-   * @throws org.eclipse.keypop.reader.InvalidCardResponseException If the card returned invalid
-   *     data during the selection process.
-   * @since 2.1.0
-   */
-  CardSelectionResult processCardSelectionScenario(
-      CardReader reader, ChannelControl channelControl);
 
   /**
    * Schedules the execution of the prepared card selection scenario as soon as a card is presented
@@ -195,35 +154,10 @@ public interface CardSelectionManager {
    * @param notificationMode The card notification mode to use when a card is detected.
    * @throws IllegalArgumentException If one of the parameters is null.
    * @since 1.0.0
-   * @deprecated Use {@link #scheduleCardSelectionScenario(ObservableCardReader,
-   *     ObservableCardReader.NotificationMode, ChannelControl)} instead.
    */
-  @Deprecated
   void scheduleCardSelectionScenario(
       ObservableCardReader observableCardReader,
       ObservableCardReader.NotificationMode notificationMode);
-
-  /**
-   * Schedules the execution of the prepared card selection scenario as soon as a card is presented
-   * to the provided {@link ObservableCardReader}.
-   *
-   * <p>{@link CardReaderEvent} are pushed to the observer according to the specified notification
-   * mode.
-   *
-   * <p>The result of the scenario execution will be analyzed by {@link
-   * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)}.
-   *
-   * @param observableCardReader The reader with which the card communication is carried out.
-   * @param notificationMode The card notification mode to use when a card is detected.
-   * @param channelControl Policy for managing the physical channel after executing commands to the
-   *     card.
-   * @throws IllegalArgumentException If one of the parameters is null.
-   * @since 2.1.0
-   */
-  void scheduleCardSelectionScenario(
-      ObservableCardReader observableCardReader,
-      ObservableCardReader.NotificationMode notificationMode,
-      ChannelControl channelControl);
 
   /**
    * Analyzes the responses provided by a {@link CardReaderEvent} following the insertion of a card
@@ -245,13 +179,11 @@ public interface CardSelectionManager {
    * {@link #importProcessedCardSelectionScenario(String)}.
    *
    * <p>Prerequisite: the card selection scenario must first have been processed via the {@link
-   * #processCardSelectionScenario(CardReader)}, or {@link #processCardSelectionScenario(CardReader,
-   * ChannelControl)}, or {@link
+   * #processCardSelectionScenario(CardReader)} or {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} method.
    *
    * <p>Caution: if the local environment does not have the card extensions involved in the
-   * selection scenario, then methods {@link #processCardSelectionScenario(CardReader)}, {@link
-   * #processCardSelectionScenario(CardReader, ChannelControl)} and {@link
+   * selection scenario, then methods {@link #processCardSelectionScenario(CardReader)} and {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} will not be able to
    * interpret the content of the result, and consequently, the content of the result object {@link
    * CardSelectionResult} will not contain any active selection. It will then be necessary to export
