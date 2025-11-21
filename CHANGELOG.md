@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added `CardTransactionManager`: New interface providing common operations for all card transactions.
+- Added `ChannelControl` enumeration: Defines the post-execution behavior of the physical channel.
+- Added `InvalidCardResponseException`: Thrown when a card returns an invalid response during command processing.
 ### Fixed
 - Fixed JUnit configuration.
 ### Changed
