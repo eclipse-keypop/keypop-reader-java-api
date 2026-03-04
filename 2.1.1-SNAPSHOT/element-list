@@ -1,0 +1,5 @@
+org.eclipse.keypop.reader
+org.eclipse.keypop.reader.selection
+org.eclipse.keypop.reader.selection.spi
+org.eclipse.keypop.reader.spi
+org.eclipse.keypop.reader.transaction.spi
