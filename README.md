@@ -16,7 +16,7 @@ on the Keypop website [keypop.org](https://keypop.org/).
 
 API Javadoc is available [here](https://docs.keypop.org/keypop-reader-java-api).
 
-API documentation and class diagram is available
+UML class diagram is available
 [here](https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/).
 
 ## About the source code
