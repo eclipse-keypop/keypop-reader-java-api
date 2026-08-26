@@ -83,10 +83,14 @@ public interface CardReaderEvent {
     CARD_REMOVED,
 
     /**
-     * The reader has become unavailable.
+     * The reader has been unregistered and is no longer usable.
      *
-     * @since 1.0.0
+     * <p>See <a
+     * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_Type">Type</a>
+     * for the normative contract.
+     *
+     * @since 3.0.0
      */
-    UNAVAILABLE
+    READER_UNREGISTERED
   }
 }

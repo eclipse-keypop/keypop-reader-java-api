@@ -43,4 +43,17 @@ public interface SmartCard {
    * @since 1.0.0
    */
   String getPowerOnData();
+
+  /**
+   * Returns whether this smart card is still active on its logical channel, i.e. whether it has not
+   * yet been released by the reader.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_SmartCard_isActive">SmartCard.isActive</a>
+   * for the normative contract.
+   *
+   * @return <b>true</b> if the smart card is active else <b>false</b>.
+   * @since 3.0.0
+   */
+  boolean isActive();
 }

@@ -29,4 +29,127 @@ import org.eclipse.keypop.reader.ReaderApiFactory;
  *
  * @since 2.0.0
  */
-public interface IsoCardSelector extends CommonIsoCardSelector<IsoCardSelector> {}
+public interface IsoCardSelector extends CardSelector<IsoCardSelector> {
+
+  /**
+   * Selects a card application DF by its name.
+   *
+   * <p>The DF is selected only if its name starts with the provided AID, as defined by ISO7816-4
+   * chapter 4.2.
+   *
+   * <p>The provided AID will be used as a parameter of the "Selection Application" ISO card
+   * command.
+   *
+   * @param aid The AID as a byte array containing 5 to 16 bytes.
+   * @return The current instance.
+   * @throws IllegalArgumentException If the provided array is null or out of range.
+   * @since 2.0.0
+   */
+  IsoCardSelector filterByDfName(byte[] aid);
+
+  /**
+   * Selects a card application DF by its name.
+   *
+   * <p>The DF is selected only if its name starts with the provided AID, as defined by ISO7816-4
+   * chapter 4.2.
+   *
+   * <p>The provided AID will be used as a parameter of the "Selection Application" ISO card
+   * command.
+   *
+   * @param aid The AID as a hexadecimal string of 5 to 16 bytes.
+   * @return The current instance.
+   * @throws IllegalArgumentException If the provided string is null, invalid or out of range.
+   * @since 2.0.0
+   */
+  IsoCardSelector filterByDfName(String aid);
+
+  /**
+   * Sets the file occurrence mode (see ISO7816-4).
+   *
+   * <p>The default value is {@link FileOccurrence#FIRST}.
+   *
+   * @param fileOccurrence The {@link FileOccurrence}.
+   * @return The current instance.
+   * @throws IllegalArgumentException If fileOccurrence is null.
+   * @since 2.0.0
+   */
+  IsoCardSelector setFileOccurrence(FileOccurrence fileOccurrence);
+
+  /**
+   * Sets the file control mode (see ISO7816-4).
+   *
+   * <p>The default value is {@link FileControlInformation#FCI}.
+   *
+   * @param fileControlInformation The {@link FileControlInformation}.
+   * @return The current instance.
+   * @throws IllegalArgumentException If fileControlInformation is null.
+   * @since 2.0.0
+   */
+  IsoCardSelector setFileControlInformation(FileControlInformation fileControlInformation);
+
+  /**
+   * Navigation options through the different applications contained in the card according to the
+   * ISO7816-4 standard.
+   *
+   * @since 2.0.0
+   */
+  enum FileOccurrence {
+    /**
+     * First occurrence.
+     *
+     * @since 2.0.0
+     */
+    FIRST,
+    /**
+     * Last occurrence.
+     *
+     * @since 2.0.0
+     */
+    LAST,
+    /**
+     * Next occurrence.
+     *
+     * @since 2.0.0
+     */
+    NEXT,
+    /**
+     * Previous occurrence.
+     *
+     * @since 2.0.0
+     */
+    PREVIOUS
+  }
+
+  /**
+   * Types of templates available in return for the Select Application command, according to the
+   * ISO7816-4 standard.
+   *
+   * @since 2.0.0
+   */
+  enum FileControlInformation {
+    /**
+     * File control information.
+     *
+     * @since 2.0.0
+     */
+    FCI,
+    /**
+     * File control parameters.
+     *
+     * @since 2.0.0
+     */
+    FCP,
+    /**
+     * File management data.
+     *
+     * @since 2.0.0
+     */
+    FMD,
+    /**
+     * No response expected.
+     *
+     * @since 2.0.0
+     */
+    NO_RESPONSE
+  }
+}

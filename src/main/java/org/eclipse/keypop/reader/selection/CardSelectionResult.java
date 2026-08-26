@@ -11,7 +11,9 @@
  ************************************************************************************** */
 package org.eclipse.keypop.reader.selection;
 
+import java.util.List;
 import java.util.Map;
+import org.eclipse.keypop.definitions.CardType;
 import org.eclipse.keypop.reader.selection.spi.CardSelectionExtension;
 import org.eclipse.keypop.reader.selection.spi.SmartCard;
 
@@ -28,6 +30,18 @@ import org.eclipse.keypop.reader.selection.spi.SmartCard;
  * @since 1.0.0
  */
 public interface CardSelectionResult {
+
+  /**
+   * Returns the type of the detected card.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionResult_getCardType">CardSelectionResult.getCardType</a>
+   * for the normative contract.
+   *
+   * @return A non-null value, {@link CardType#UNKNOWN} if the card type could not be identified.
+   * @since 3.0.0
+   */
+  CardType getCardType();
 
   /**
    * Gets all {@link SmartCard} corresponding to all successful selection cases in a map for which
@@ -54,4 +68,16 @@ public interface CardSelectionResult {
    * @since 1.0.0
    */
   int getActiveSelectionIndex();
+
+  /**
+   * Returns the indexes of all the active selections, one per channel in multi-channel mode.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionResult_getActiveSelectionIndexes">CardSelectionResult.getActiveSelectionIndexes</a>
+   * for the normative contract.
+   *
+   * @return A non-null but possibly empty list of non-negative values.
+   * @since 3.0.0
+   */
+  List<Integer> getActiveSelectionIndexes();
 }

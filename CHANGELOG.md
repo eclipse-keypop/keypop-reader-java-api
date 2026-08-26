@@ -5,6 +5,58 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+:warning: Major version aligning the API with version `3.0` of the
+[CNA Terminal Reader API specification](https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/).
+This release is **not** backward compatible with `2.x`.
+### Added
+- `CardReaderProvider`: standardized discovery and access to the readers available in the execution environment,
+  obtained via `ReaderApiFactory.getCardReaderProvider()`.
+- `CardDetectionSettings`: builder carrying the configuration of a card detection cycle (detection mode, RF
+  technologies, ECP frame), obtained via `ReaderApiFactory.createCardDetectionSettings()`.
+- `CardReaderEventHandler`: SPI merging the reception of reader events and of observation errors.
+- `IsoCardTransactionManager` and `MultichannelCardTransactionManager`: multi-channel transaction manager contracts.
+- `CardSelectionManager.processMultichannelCardSelectionScenario(CardReader, ChannelSelectionPolicy)`.
+- `CardSelectionManager.CardPresenceNotificationPolicy`, `CardSelectionManager.SelectionExecutionPolicy` and
+  `CardSelectionManager.ChannelSelectionPolicy` enumerations.
+- `CardSelectionResult.getCardType()` and `CardSelectionResult.getActiveSelectionIndexes()`.
+- `CardSelector.filterByCardType(CardType)`.
+- `SmartCard.isActive()` and `IsoSmartCard.isBasicChannel()`.
+- `ObservableCardReader.endCardProcessing()`.
+- `CardReaderEvent.Type.READER_UNREGISTERED`.
+### Changed
+- `ObservableCardReader.startCardDetection(DetectionMode)` -> `startCardDetection(CardDetectionSettings,
+  CardReaderEventHandler)`: the detection settings and the event handler are now provided at detection startup.
+- `CardSelectionManager.processCardSelectionScenario(CardReader)` -> `processCardSelectionScenario(CardReader,
+  SelectionExecutionPolicy)`.
+- `CardSelectionManager.scheduleCardSelectionScenario(ObservableCardReader, NotificationMode)` ->
+  `scheduleCardSelectionScenario(ObservableCardReader, CardPresenceNotificationPolicy, SelectionExecutionPolicy)`.
+- `CardTransactionManager` is no longer generic and `T processCommands(ChannelControl)` becomes
+  `void processCommands()`.
+- `IsoCardSelector` now extends `CardSelector<IsoCardSelector>` directly and declares the ISO 7816-4 filters as well
+  as the `FileOccurrence` and `FileControlInformation` enumerations.
+- New dependency on the [Keypop Definitions API](https://github.com/eclipse-keypop/keypop-definitions-jvm-api)
+  providing the `CardType` and `RfTechnology` enumerations.
+### Removed
+- `ConfigurableCardReader` and `ReaderProtocolNotSupportedException`: protocol filtering is replaced by
+  `CardSelector.filterByCardType(CardType)` and `CardDetectionSettings.setRfTechnologies(Set)`.
+- `ChannelControl`: replaced by `MultichannelCardTransactionManager.closeChannel()` and
+  `processCommandsAndCloseChannel()`.
+- `CommonIsoCardSelector`: merged into `IsoCardSelector`.
+- `org.eclipse.keypop.reader.selection.InvalidCardResponseException`: duplicate of
+  `org.eclipse.keypop.reader.InvalidCardResponseException`.
+- `CardReaderObserverSpi` and `CardReaderObservationExceptionHandlerSpi`: merged into `CardReaderEventHandler`.
+- `CardSelectionManager.setMultipleSelectionMode()`: replaced by `SelectionExecutionPolicy`.
+- `CardSelectionManager.prepareReleaseChannel()`: replaced by `ChannelSelectionPolicy` and the multi-channel
+  transaction managers.
+- `ObservableCardReader.addObserver(...)`, `removeObserver(...)`, `clearObservers()`, `countObservers()` and
+  `setReaderObservationExceptionHandler(...)`: a single `CardReaderEventHandler` is now registered at detection
+  startup.
+- `ObservableCardReader.finalizeCardProcessing()`: replaced by `endCardProcessing()`.
+- `ObservableCardReader.DetectionMode`: moved to `CardDetectionSettings.DetectionMode`, the `SINGLESHOT` value being
+  renamed `SINGLE_SHOT`.
+- `ObservableCardReader.NotificationMode`: replaced by `CardSelectionManager.CardPresenceNotificationPolicy`.
+- `CardReaderEvent.Type.UNAVAILABLE`: renamed `READER_UNREGISTERED`.
+- `CardSelector.filterByCardProtocol(String)`: replaced by `filterByCardType(CardType)`.
 
 ## [2.1.0] - 2025-11-21
 ### Added

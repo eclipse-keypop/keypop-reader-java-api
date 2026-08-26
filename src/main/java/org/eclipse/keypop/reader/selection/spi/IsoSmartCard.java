@@ -33,4 +33,18 @@ public interface IsoSmartCard extends SmartCard {
    * @since 1.0.0
    */
   byte[] getSelectApplicationResponse();
+
+  /**
+   * Returns whether this smart card is attached to the basic channel of the underlying ISO 7816-4
+   * card, or to an additional logical channel.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_IsoSmartCard_isBasicChannel">IsoSmartCard.isBasicChannel</a>
+   * for the normative contract.
+   *
+   * @return <b>true</b> if attached to the basic channel, <b>false</b> if attached to an additional
+   *     logical channel.
+   * @since 3.0.0
+   */
+  boolean isBasicChannel();
 }

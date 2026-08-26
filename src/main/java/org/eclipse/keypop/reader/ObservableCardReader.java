@@ -11,79 +11,29 @@
  ************************************************************************************** */
 package org.eclipse.keypop.reader;
 
-import org.eclipse.keypop.reader.spi.CardReaderObservationExceptionHandlerSpi;
-import org.eclipse.keypop.reader.spi.CardReaderObserverSpi;
+import org.eclipse.keypop.reader.spi.CardReaderEventHandler;
 
 /**
- * Card reader able to observe the insertion/removal of cards.
+ * Card reader able to observe the insertion and the removal of cards.
  *
  * @since 1.0.0
  */
 public interface ObservableCardReader extends CardReader {
 
   /**
-   * Sets the exception handler.
+   * Starts the card detection with the provided settings and registers the handler that will
+   * receive the resulting reader events and observation errors.
    *
-   * <p>The invocation of this method is <b>mandatory</b> when the reader has to be observed.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ObservableCardReader_startCardDetection">ObservableCardReader.startCardDetection</a>
+   * for the normative contract.
    *
-   * <p>In case of a fatal error during the observation, the handler will receive a notification.
-   *
-   * @param exceptionHandler The exception handler implemented by the application.
-   * @throws IllegalArgumentException If the provided handler is null.
-   * @since 1.0.0
+   * @param settings The detection configuration.
+   * @param eventHandler The application-side handler receiving the reader events and errors.
+   * @throws IllegalArgumentException If one of the provided parameters is null.
+   * @since 3.0.0
    */
-  void setReaderObservationExceptionHandler(
-      CardReaderObservationExceptionHandlerSpi exceptionHandler);
-
-  /**
-   * Registers a new observer to be notified when a reader event occurs.
-   *
-   * <p>The provided observer must implement the {@link CardReaderObserverSpi} interface to be able
-   * to receive the events produced by this reader (card insertion, removal, etc.)
-   *
-   * @param observer An observer object implementing the required interface (should be not null).
-   * @throws IllegalArgumentException If the provided observer is null.
-   * @since 1.0.0
-   */
-  void addObserver(CardReaderObserverSpi observer);
-
-  /**
-   * Unregisters a reader observer.
-   *
-   * <p>The observer will no longer receive any of the events produced by this reader.
-   *
-   * @param observer The observer object to be removed (should be not null).
-   * @throws IllegalArgumentException If the provided observer is null.
-   * @since 1.0.0
-   */
-  void removeObserver(CardReaderObserverSpi observer);
-
-  /**
-   * Unregisters all observers at once.
-   *
-   * @since 1.0.0
-   */
-  void clearObservers();
-
-  /**
-   * Provides the current number of registered observers.
-   *
-   * @return An int.
-   * @since 1.0.0
-   */
-  int countObservers();
-
-  /**
-   * Starts the card detection. Once activated, the application can be notified of the arrival of a
-   * card.
-   *
-   * <p>The {@link DetectionMode} indicates the action to be followed after processing the card.
-   *
-   * @param detectionMode The card detection mode.
-   * @throws IllegalArgumentException If the provided detection mode is null.
-   * @since 1.0.0
-   */
-  void startCardDetection(DetectionMode detectionMode);
+  void startCardDetection(CardDetectionSettings settings, CardReaderEventHandler eventHandler);
 
   /**
    * Stops the card detection.
@@ -93,66 +43,15 @@ public interface ObservableCardReader extends CardReader {
   void stopCardDetection();
 
   /**
-   * Notifies the observation process that the processing of the card has been completed in order to
-   * ensure that the card monitoring cycle runs properly.
+   * Notifies the reader that the business processing of the current card has been completed, so
+   * that it can deselect the card, release the associated smart cards and wait for the card
+   * removal.
    *
-   * <p>This method has no effect if the physical communication channel has already been closed.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ObservableCardReader_endCardProcessing">ObservableCardReader.endCardProcessing</a>
+   * for the normative contract.
    *
-   * <p>It is <b>mandatory</b> to call this method when the physical communication channel with the
-   * card could not be closed properly.<br>
-   * The channel closing is nominally managed during the last transmission with the card. However,
-   * there are cases where exchanges with the card are interrupted (e.g. by an exception), in which
-   * case it is necessary to explicitly close the channel using this method.
-   *
-   * <p>In practice, it is recommended to call this method in all cases (e.g. in a "finally"
-   * statement) at the end of a card processing whatever the result.
-   *
-   * @since 1.0.0
+   * @since 3.0.0
    */
-  void finalizeCardProcessing();
-
-  /**
-   * Card detection management options to be applied after processing a card.
-   *
-   * @since 1.0.0
-   */
-  enum DetectionMode {
-
-    /**
-     * Continue waiting for the insertion of a next card.
-     *
-     * @since 1.0.0
-     */
-    REPEATING,
-
-    /**
-     * Stop and wait for a restart signal.
-     *
-     * @since 1.0.0
-     */
-    SINGLESHOT
-  }
-
-  /**
-   * The options that apply when a card is detected.
-   *
-   * @since 1.0.0
-   */
-  enum NotificationMode {
-
-    /**
-     * All cards presented to the readers are notified to the observers, regardless of the result of
-     * the selection.
-     *
-     * @since 1.0.0
-     */
-    ALWAYS,
-    /**
-     * Only the cards that have been successfully selected will be notified to the observers. The
-     * others will be ignored and the application will not be aware of their presence.
-     *
-     * @since 1.0.0
-     */
-    MATCHED_ONLY
-  }
+  void endCardProcessing();
 }
