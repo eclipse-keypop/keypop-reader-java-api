@@ -16,6 +16,10 @@ import org.eclipse.keypop.reader.spi.CardReaderEventHandler;
 /**
  * Card reader able to observe the insertion and the removal of cards.
  *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_ObservableCardReader">ObservableCardReader</a>
+ * for the normative contract.
+ *
  * @since 1.0.0
  */
 public interface ObservableCardReader extends CardReader {
@@ -36,7 +40,12 @@ public interface ObservableCardReader extends CardReader {
   void startCardDetection(CardDetectionSettings settings, CardReaderEventHandler eventHandler);
 
   /**
-   * Stops the card detection.
+   * Stops the card detection, the registered event handler no longer receiving card events until
+   * detection is restarted.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ObservableCardReader_stopCardDetection">ObservableCardReader.stopCardDetection</a>
+   * for the normative contract.
    *
    * @since 1.0.0
    */

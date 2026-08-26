@@ -13,31 +13,24 @@ package org.eclipse.keypop.reader.selection.spi;
 
 /**
  * Basic smart card with which communication has been established after a selection process and
- * which is ready to receive APDUs.
+ * which is ready to receive APDUs, to be implemented and possibly extended by a card extension.
  *
- * <p>The power-on data that could be collected by the selection process are made available.
- *
- * <p>Must be implemented and possibly extended by a card extension to meet its specific needs.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_SmartCard">SmartCard</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */
 public interface SmartCard {
 
   /**
-   * Gets the card's power-on data.
+   * Returns the card's power-on data, i.e. the data retrieved by the reader when the card is
+   * inserted, as a string that may be either a hexadecimal string or any other relevant
+   * representation.
    *
-   * <p>The power-on data is defined as the data retrieved by the reader when the card is inserted.
-   *
-   * <p>In the case of a contact reader, this is the Answer To Reset data (ATR) defined by ISO7816.
-   *
-   * <p>In the case of a contactless reader, the reader decides what this data is.<br>
-   * Some contactless readers provide a virtual ATR (partially standardized by the PC/SC standard),
-   * but other devices can have their own definition, including for example elements from the
-   * anti-collision stage of the ISO14443 protocol (ATQA, ATQB, ATS, SAK, etc) or any proprietary
-   * definitions.
-   *
-   * <p>These data being variable from one reader to another, they are defined here in string format
-   * which can be either a hexadecimal string or any other relevant information.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_SmartCard_getPowerOnData">SmartCard.getPowerOnData</a>
+   * for the normative contract.
    *
    * @return Null if no power-on data is available.
    * @since 1.0.0

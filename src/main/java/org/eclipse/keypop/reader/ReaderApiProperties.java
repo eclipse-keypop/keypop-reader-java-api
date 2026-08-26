@@ -12,14 +12,18 @@
 package org.eclipse.keypop.reader;
 
 /**
- * Reader API properties.
+ * Immutable properties of the Reader API.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_ReaderApiProperties">ReaderApiProperties</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */
 public final class ReaderApiProperties {
 
   /**
-   * API version: {@value}
+   * Version of the API implemented by this binding, as a "MAJOR.MINOR" dotted decimal: {@value}
    *
    * @since 1.0.0
    */

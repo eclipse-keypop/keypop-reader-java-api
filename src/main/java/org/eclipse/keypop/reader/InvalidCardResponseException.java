@@ -12,7 +12,12 @@
 package org.eclipse.keypop.reader;
 
 /**
- * Indicates that a response received from the card during the command processing was invalid.
+ * Indicates that a response received from the card during a selection process or a transaction was
+ * invalid, or that an ISO 7816-4 card does not support a requested multi-channel operation.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_InvalidCardResponseException">InvalidCardResponseException</a>
+ * for the normative contract.
  *
  * @since 2.1.0
  */

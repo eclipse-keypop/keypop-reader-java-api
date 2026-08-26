@@ -12,7 +12,12 @@
 package org.eclipse.keypop.reader;
 
 /**
- * Indicates that the communication with the card failed.
+ * Indicates that the communication with the card failed, typically because the card was removed
+ * from the reader before the exchange could complete.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardCommunicationException">CardCommunicationException</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */

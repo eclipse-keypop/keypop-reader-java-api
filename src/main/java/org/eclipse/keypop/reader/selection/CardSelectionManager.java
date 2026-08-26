@@ -20,18 +20,25 @@ import org.eclipse.keypop.reader.ReaderCommunicationException;
 import org.eclipse.keypop.reader.selection.spi.CardSelectionExtension;
 
 /**
- * Service dedicated to card selection, based on the preparation of a card selection scenario.
+ * Service responsible for preparing and executing card selection scenarios, obtained via the method
+ * {@link org.eclipse.keypop.reader.ReaderApiFactory#createCardSelectionManager()}.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardSelectionManager">CardSelectionManager</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */
 public interface CardSelectionManager {
 
   /**
-   * Appends a card selection case to the card selection scenario.
+   * Appends a card selection case to the card selection scenario and returns the index giving its
+   * position in the scenario, to be used to retrieve the corresponding result in the {@link
+   * CardSelectionResult} object.
    *
-   * <p>The method returns the index giving the current position of the selection in the selection
-   * scenario (0 for the first application, 1 for the second, etc.). This index will be used to
-   * retrieve the corresponding result in the {@link CardSelectionResult} object.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_prepareSelection">CardSelectionManager.prepareSelection</a>
+   * for the normative contract.
    *
    * @param cardSelector The card selector containing the filters to be used to select the card.
    * @param cardSelectionExtension The card selection extension to be used to parse the card
@@ -44,22 +51,27 @@ public interface CardSelectionManager {
   int prepareSelection(CardSelector<?> cardSelector, CardSelectionExtension cardSelectionExtension);
 
   /**
-   * Exports the content of the current prepared card selection scenario in string format.
+   * Exports the content of the current prepared card selection scenario in string format, so that
+   * it can be imported into the same or another card selection manager via the method {@link
+   * #importCardSelectionScenario(String)}.
    *
-   * <p>This string can be imported into the same or another card selection manager via the method
-   * {@link #importCardSelectionScenario(String)}.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_exportCardSelectionScenario">CardSelectionManager.exportCardSelectionScenario</a>
+   * for the normative contract.
    *
-   * @return A non-null string.
+   * @return A non-empty string.
    * @see #importCardSelectionScenario(String)
    * @since 1.1.0
    */
   String exportCardSelectionScenario();
 
   /**
-   * Imports a previously exported card selection scenario in string format.
+   * Imports a card selection scenario previously exported in string format via the method {@link
+   * #exportCardSelectionScenario()}.
    *
-   * <p>Prerequisite: the string must have been exported from a card selection manager via the
-   * method {@link #exportCardSelectionScenario()}.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_importCardSelectionScenario">CardSelectionManager.importCardSelectionScenario</a>
+   * for the normative contract.
    *
    * @param cardSelectionScenario The string containing the exported card selection scenario.
    * @return The index of the last imported selection in the card selection scenario.
@@ -135,7 +147,11 @@ public interface CardSelectionManager {
 
   /**
    * Analyzes the responses provided by a {@link CardReaderEvent} following the insertion of a card
-   * and the execution of the card selection scenario.
+   * and the execution of the scheduled card selection scenario.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_parseScheduledCardSelectionsResponse">CardSelectionManager.parseScheduledCardSelectionsResponse</a>
+   * for the normative contract.
    *
    * @param scheduledCardSelectionsResponse The card selection scenario execution response.
    * @return A non-null reference.
@@ -147,24 +163,20 @@ public interface CardSelectionManager {
       ScheduledCardSelectionsResponse scheduledCardSelectionsResponse);
 
   /**
-   * Exports the content of the previously processed card selection scenario in string format.
-   *
-   * <p>This string can be imported into the same or another card selection manager via the method
-   * {@link #importProcessedCardSelectionScenario(String)}.
+   * Exports the content of the previously processed card selection scenario in string format, so
+   * that it can be imported into the same or another card selection manager via the method {@link
+   * #importProcessedCardSelectionScenario(String)}.
    *
    * <p>Prerequisite: the card selection scenario must first have been processed via the {@link
    * #processCardSelectionScenario(CardReader, SelectionExecutionPolicy)}, {@link
    * #processMultichannelCardSelectionScenario(CardReader, ChannelSelectionPolicy)} or {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} method.
    *
-   * <p>Caution: if the local environment does not have the card extensions involved in the
-   * selection scenario, then the processing methods will not be able to interpret the content of
-   * the result, and consequently, the content of the result object {@link CardSelectionResult} will
-   * not contain any active selection. It will then be necessary to export the processed scenario in
-   * order to import it and interpret it correctly by a card selection manager that has all the card
-   * extensions involved in the selection scenario.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_exportProcessedCardSelectionScenario">CardSelectionManager.exportProcessedCardSelectionScenario</a>
+   * for the normative contract.
    *
-   * @return A non-null string.
+   * @return A non-empty string.
    * @throws IllegalStateException If the card selection scenario has not yet been processed or has
    *     failed.
    * @see #importProcessedCardSelectionScenario(String)
@@ -186,6 +198,10 @@ public interface CardSelectionManager {
    *   <li>the current manager must first be configured with the same card selection scenario as the
    *       manager that was used to export the processed card selection scenario.
    * </ul>
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_importProcessedCardSelectionScenario">CardSelectionManager.importProcessedCardSelectionScenario</a>
+   * for the normative contract.
    *
    * @param processedCardSelectionScenario The string containing the exported processed card
    *     selection scenario.

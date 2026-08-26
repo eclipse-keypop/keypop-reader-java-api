@@ -14,18 +14,12 @@ package org.eclipse.keypop.reader.selection;
 import org.eclipse.keypop.reader.ReaderApiFactory;
 
 /**
- * Basic filters used to restrict the selection process to certain cards.
- *
- * <p>These filters are all optional but can also be combined.
- *
- * <p>If no filtering is specified, any card that responds when inserted in the reader will be
- * considered selected.
- *
- * <p>Conversely, if one or more filters have been defined, the card will not be selected if one of
- * them rejects the card.
- *
- * <p>An instance of this interface can be obtained via the method {@link
+ * Basic, technology-agnostic card selector, obtained via the method {@link
  * ReaderApiFactory#createBasicCardSelector()}.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_BasicCardSelector">BasicCardSelector</a>
+ * for the normative contract.
  *
  * @since 2.0.0
  */

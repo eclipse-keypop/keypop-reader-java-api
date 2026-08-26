@@ -17,9 +17,9 @@ import org.eclipse.keypop.definitions.CardType;
  * Base contract of all card selectors, defining the filters used to restrict the selection process
  * to a subset of cards.
  *
- * <p>All filters are optional and may be combined. If no filter is specified, any card that
- * responds when presented to the reader is considered selected. Conversely, when one or more
- * filters are defined, the card is not selected as soon as one of them rejects it.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardSelector">CardSelector</a>
+ * for the normative contract.
  *
  * @param <T> The type of the lowest level child object.
  * @since 2.0.0
@@ -43,6 +43,10 @@ public interface CardSelector<T extends CardSelector<T>> {
   /**
    * Restricts the selection process to cards whose power-on data provided by the reader matches a
    * specific regular expression.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelector_filterByPowerOnData">CardSelector.filterByPowerOnData</a>
+   * for the normative contract.
    *
    * @param powerOnDataRegex The regular expression to use as filter.
    * @return The current instance.

@@ -17,16 +17,12 @@ import org.eclipse.keypop.reader.ReaderCommunicationException;
 import org.eclipse.keypop.reader.selection.spi.SmartCard;
 
 /**
- * Contains operations common to all card transactions.
+ * Root contract common to every card transaction manager exposed by a card extension, the {@link
+ * SmartCard} registered with the manager being updated after each data exchange with the card.
  *
- * <p>To exchange data with the card, it is first necessary to prepare the commands to be
- * transmitted to the card and then to process the prepared commands.
- *
- * <p>The card commands preparation step makes it possible to group commands together to minimize
- * network data exchanges (especially useful in a distributed architecture).
- *
- * <p>The {@link SmartCard} object registered with the manager is updated during the transaction
- * after each data exchange with the card.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardTransactionManager">CardTransactionManager</a>
+ * for the normative contract.
  *
  * @since 2.1.0
  */
