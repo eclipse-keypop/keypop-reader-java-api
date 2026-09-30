@@ -15,10 +15,11 @@ import org.eclipse.keypop.reader.selection.CardSelectionManager;
 import org.eclipse.keypop.reader.selection.ScheduledCardSelectionsResponse;
 
 /**
- * Card event data container indicating a change of state.
+ * Data container describing a change of state observed by a card reader.
  *
- * <p>Contains the event origin (reader name), the event type and possibly the card selection
- * response (when available).
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardReaderEvent">CardReaderEvent</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */
@@ -27,13 +28,21 @@ public interface CardReaderEvent {
   /**
    * Returns the name of the reader that generated the event.
    *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardReaderEvent_getReaderName">CardReaderEvent.getReaderName</a>
+   * for the normative contract.
+   *
    * @return A non-empty string.
    * @since 1.0.0
    */
   String getReaderName();
 
   /**
-   * Returns the card reader event type.
+   * Returns the type of the event.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardReaderEvent_getType">CardReaderEvent.getType</a>
+   * for the normative contract.
    *
    * @return A non-null value.
    * @since 1.0.0
@@ -41,35 +50,39 @@ public interface CardReaderEvent {
   Type getType();
 
   /**
-   * Returns the card selection responses when it is available and null in all other cases. It may
-   * be available when the event type is {@link Type#CARD_INSERTED} and always present when the
-   * event type is {@link Type#CARD_MATCHED}.
+   * Returns the response of the selection scenario scheduled on the reader, to be interpreted with
+   * {@link
+   * CardSelectionManager#parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)}.
    *
-   * <p>It is necessary to use the method {@link
-   * CardSelectionManager#parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} to
-   * analyze the result.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardReaderEvent_getScheduledCardSelectionsResponse">CardReaderEvent.getScheduledCardSelectionsResponse</a>
+   * for the normative contract.
    *
-   * @return Null if the event is not carrying a {@link ScheduledCardSelectionsResponse}.
+   * @return Null if no selection scenario has been scheduled.
    * @since 1.0.0
    */
   ScheduledCardSelectionsResponse getScheduledCardSelectionsResponse();
 
   /**
-   * Possible card events.
+   * Possible card reader events.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_Type">Type</a>
+   * for the normative contract.
    *
    * @since 1.0.0
    */
   enum Type {
 
     /**
-     * A card has been inserted with or without specific selection.
+     * A card has been inserted, with or without a specific selection.
      *
      * @since 1.0.0
      */
     CARD_INSERTED,
 
     /**
-     * A card has been inserted that matches the selection.
+     * A card has been inserted that matches the selection criteria.
      *
      * @since 1.0.0
      */
@@ -83,10 +96,10 @@ public interface CardReaderEvent {
     CARD_REMOVED,
 
     /**
-     * The reader has become unavailable.
+     * The reader has been unregistered and is no longer usable.
      *
-     * @since 1.0.0
+     * @since 3.0.0
      */
-    UNAVAILABLE
+    READER_UNREGISTERED
   }
 }

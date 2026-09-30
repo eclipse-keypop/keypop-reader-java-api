@@ -12,10 +12,12 @@
 package org.eclipse.keypop.reader;
 
 /**
- * Indicates that the communication with the reader failed.
+ * Indicates that the communication with the reader failed, the most likely reason being a physical
+ * disconnection of the reader.
  *
- * <p>The most likely reason is a physical disconnection of the reader, but other technical problems
- * may also be the origin of the failure.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_ReaderCommunicationException">ReaderCommunicationException</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */

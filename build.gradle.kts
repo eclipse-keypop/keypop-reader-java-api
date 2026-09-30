@@ -4,6 +4,7 @@
 
 plugins {
   java
+  `java-library`
   `maven-publish`
   signing
   id("com.diffplug.spotless") version "6.25.0"
@@ -14,6 +15,7 @@ plugins {
 ///////////////////////////////////////////////////////////////////////////////
 
 dependencies {
+  api("org.eclipse.keypop:keypop-definitions-jvm-api:1.0.0-SNAPSHOT")
   testImplementation(platform("org.junit:junit-bom:5.12.2"))
   testImplementation("org.junit.jupiter:junit-jupiter")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")

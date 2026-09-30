@@ -11,16 +11,15 @@
  ************************************************************************************** */
 package org.eclipse.keypop.reader.selection;
 
+import org.eclipse.keypop.definitions.CardType;
+
 /**
- * Common filters used to restrict the selection process to certain cards.
+ * Base contract of all card selectors, defining the filters used to restrict the selection process
+ * to a subset of cards.
  *
- * <p>These filters are all optional but can also be combined.
- *
- * <p>If no filtering is specified, any card that responds when inserted in the reader will be
- * considered selected.
- *
- * <p>Conversely, if one or more filters have been defined, the card will not be selected if one of
- * them rejects the card.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardSelector">CardSelector</a>
+ * for the normative contract.
  *
  * @param <T> The type of the lowest level child object.
  * @since 2.0.0
@@ -28,28 +27,26 @@ package org.eclipse.keypop.reader.selection;
 public interface CardSelector<T extends CardSelector<T>> {
 
   /**
-   * Restricts the selection process to cards communicating with the reader according to a specific
-   * protocol, corresponding to the underlying technology: ISO14443-A, ISO14443-B or any other
-   * proprietary or standardized communication technology.
+   * Restricts the selection process to cards whose detected type matches the provided value.
    *
-   * <p>The protocol is identified by its <b>logical name</b>.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelector_filterByCardType">CardSelector.filterByCardType</a>
+   * for the normative contract.
    *
-   * <p><b>Prerequisites</b>: the reader must be of type {@link
-   * org.eclipse.keypop.reader.ConfigurableCardReader} and the targeted card protocol(s) must be
-   * activated via the {@link
-   * org.eclipse.keypop.reader.ConfigurableCardReader#activateProtocol(String, String)} method and
-   * associated with the logical name used as a filter.
-   *
-   * @param logicalProtocolName The logical name of the protocol to use as filter.
+   * @param cardType The card type to use as filter.
    * @return The current instance.
-   * @throws IllegalArgumentException If the provided logical protocol name is null or empty.
-   * @since 2.0.0
+   * @throws IllegalArgumentException If the provided card type is null.
+   * @since 3.0.0
    */
-  T filterByCardProtocol(String logicalProtocolName);
+  T filterByCardType(CardType cardType);
 
   /**
    * Restricts the selection process to cards whose power-on data provided by the reader matches a
    * specific regular expression.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelector_filterByPowerOnData">CardSelector.filterByPowerOnData</a>
+   * for the normative contract.
    *
    * @param powerOnDataRegex The regular expression to use as filter.
    * @return The current instance.

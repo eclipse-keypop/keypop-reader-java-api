@@ -14,68 +14,31 @@ package org.eclipse.keypop.reader.selection;
 import org.eclipse.keypop.reader.CardCommunicationException;
 import org.eclipse.keypop.reader.CardReader;
 import org.eclipse.keypop.reader.CardReaderEvent;
+import org.eclipse.keypop.reader.InvalidCardResponseException;
 import org.eclipse.keypop.reader.ObservableCardReader;
-import org.eclipse.keypop.reader.ReaderApiFactory;
 import org.eclipse.keypop.reader.ReaderCommunicationException;
 import org.eclipse.keypop.reader.selection.spi.CardSelectionExtension;
 
 /**
- * Service dedicated to card selection, based on the preparation of a card selection scenario.
+ * Service responsible for preparing and executing card selection scenarios, obtained via the method
+ * {@link org.eclipse.keypop.reader.ReaderApiFactory#createCardSelectionManager()}.
  *
- * <p>A card selection scenario consists of one or more selection cases based on a {@link
- * CardSelectionExtension}.<br>
- * A card selection case targets a specific card. <br>
- * Optionally, additional commands can be defined to be executed after the successful selection of
- * the card. <br>
- *
- * <p>If a card selection case fails, the service will try with the next card selection case defined
- * in the scenario, until there are no further card selection cases available.
- *
- * <p>If a card selection case succeeds:
- *
- * <ul>
- *   <li>By default, the service stops at the first successful card selection.
- *   <li>If the multiple selection mode is set (disabled by default), the service will execute the
- *       next selection. This multiple selection mode force the execution of all card selection
- *       cases defined in the scenario. This method can be enabled using the {@link
- *       CardSelectionManager#setMultipleSelectionMode()} method
- * </ul>
- *
- * <p>The logical channel established with the card can be left open (default) or closed after card
- * selection (by using the {@link CardSelectionManager#prepareReleaseChannel()} method).
- *
- * <p>This service allows to:
- *
- * <ul>
- *   <li>Prepare the card selection scenario.
- *   <li>Make an explicit selection of a card (when the card is already present).
- *   <li>Schedule the execution of the selection as soon as a card is presented to an observable
- *       reader.
- * </ul>
- *
- * An instance of this interface can be obtained via the method {@link
- * ReaderApiFactory#createCardSelectionManager()}.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardSelectionManager">CardSelectionManager</a>
+ * for the normative contract.
  *
  * @since 1.0.0
  */
 public interface CardSelectionManager {
 
   /**
-   * Sets the multiple selection mode to process all selection cases even in case of a successful
-   * selection.
+   * Appends a card selection case to the card selection scenario and returns the index giving its
+   * position in the scenario, to be used to retrieve the corresponding result in the {@link
+   * CardSelectionResult} object.
    *
-   * <p>The multiple selection mode is disabled by default.
-   *
-   * @since 1.0.0
-   */
-  void setMultipleSelectionMode();
-
-  /**
-   * Appends a card selection case to the card selection scenario.
-   *
-   * <p>The method returns the index giving the current position of the selection in the selection
-   * scenario (0 for the first application, 1 for the second, etc.). This index will be used to
-   * retrieve the corresponding result in the {@link CardSelectionResult} object.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_prepareSelection">CardSelectionManager.prepareSelection</a>
+   * for the normative contract.
    *
    * @param cardSelector The card selector containing the filters to be used to select the card.
    * @param cardSelectionExtension The card selection extension to be used to parse the card
@@ -88,33 +51,27 @@ public interface CardSelectionManager {
   int prepareSelection(CardSelector<?> cardSelector, CardSelectionExtension cardSelectionExtension);
 
   /**
-   * Requests the closing of the physical channel at the end of the execution of the card selection
-   * request.
+   * Exports the content of the current prepared card selection scenario in string format, so that
+   * it can be imported into the same or another card selection manager via the method {@link
+   * #importCardSelectionScenario(String)}.
    *
-   * <p>It is thus possible to chain several selections on the same card selection scenario by
-   * restarting the card connection sequence.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_exportCardSelectionScenario">CardSelectionManager.exportCardSelectionScenario</a>
+   * for the normative contract.
    *
-   * @since 1.0.0
-   */
-  void prepareReleaseChannel();
-
-  /**
-   * Exports the content of the current prepared card selection scenario in string format.
-   *
-   * <p>This string can be imported into the same or another card selection manager via the method
-   * {@link #importCardSelectionScenario(String)}.
-   *
-   * @return A non-null string.
+   * @return A non-empty string.
    * @see #importCardSelectionScenario(String)
    * @since 1.1.0
    */
   String exportCardSelectionScenario();
 
   /**
-   * Imports a previously exported card selection scenario in string format.
+   * Imports a card selection scenario previously exported in string format via the method {@link
+   * #exportCardSelectionScenario()}.
    *
-   * <p>Prerequisite: the string must have been exported from a card selection manager via the
-   * method {@link #exportCardSelectionScenario()}.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_importCardSelectionScenario">CardSelectionManager.importCardSelectionScenario</a>
+   * for the normative contract.
    *
    * @param cardSelectionScenario The string containing the exported card selection scenario.
    * @return The index of the last imported selection in the card selection scenario.
@@ -125,43 +82,76 @@ public interface CardSelectionManager {
   int importCardSelectionScenario(String cardSelectionScenario);
 
   /**
-   * Explicitly executes a previously prepared card selection scenario and returns the card
-   * selection result.
+   * Explicitly executes a previously prepared card selection scenario with the provided execution
+   * policy and returns the card selection result.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_processCardSelectionScenario">CardSelectionManager.processCardSelectionScenario</a>
+   * for the normative contract.
    *
    * @param reader The reader to communicate with the card.
+   * @param selectionExecutionPolicy The policy governing the iteration over the selection cases.
    * @return A non-null reference.
-   * @throws IllegalArgumentException If the provided reader is null.
+   * @throws IllegalArgumentException If one of the provided parameters is null.
    * @throws ReaderCommunicationException If the communication with the reader has failed.
-   * @throws CardCommunicationException If communication with the card has failed or if the status
-   *     word check is enabled in the card request and the card has returned an unexpected code.
+   * @throws CardCommunicationException If communication with the card has failed.
    * @throws InvalidCardResponseException If the card returned invalid data during the selection
-   *     process.
-   * @since 1.0.0
+   *     process, or if the status word check is enabled in the card request and the card has
+   *     returned an unexpected code.
+   * @since 3.0.0
    */
-  CardSelectionResult processCardSelectionScenario(CardReader reader);
+  CardSelectionResult processCardSelectionScenario(
+      CardReader reader, SelectionExecutionPolicy selectionExecutionPolicy);
+
+  /**
+   * Explicitly executes a previously prepared card selection scenario in multi-channel mode with
+   * the provided channel policy and returns the card selection result.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_processMultichannelCardSelectionScenario">CardSelectionManager.processMultichannelCardSelectionScenario</a>
+   * for the normative contract.
+   *
+   * @param reader The reader to communicate with the card.
+   * @param channelSelectionPolicy The policy governing the channels on which selections are placed.
+   * @return A non-null reference.
+   * @throws IllegalArgumentException If one of the provided parameters is null.
+   * @throws ReaderCommunicationException If the communication with the reader has failed.
+   * @throws CardCommunicationException If communication with the card has failed.
+   * @throws InvalidCardResponseException If the card does not support multi-channel or returned
+   *     invalid data.
+   * @since 3.0.0
+   */
+  CardSelectionResult processMultichannelCardSelectionScenario(
+      CardReader reader, ChannelSelectionPolicy channelSelectionPolicy);
 
   /**
    * Schedules the execution of the prepared card selection scenario as soon as a card is presented
-   * to the provided {@link ObservableCardReader}.
+   * to the provided {@link ObservableCardReader}, with the provided notification and execution
+   * policies.
    *
-   * <p>{@link CardReaderEvent} are pushed to the observer according to the specified notification
-   * mode.
-   *
-   * <p>The result of the scenario execution will be analyzed by {@link
-   * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)}.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_scheduleCardSelectionScenario">CardSelectionManager.scheduleCardSelectionScenario</a>
+   * for the normative contract.
    *
    * @param observableCardReader The reader with which the card communication is carried out.
-   * @param notificationMode The card notification mode to use when a card is detected.
-   * @throws IllegalArgumentException If one of the parameters is null.
-   * @since 1.0.0
+   * @param cardPresenceNotificationPolicy The card presence notification policy to use when a card
+   *     is detected.
+   * @param selectionExecutionPolicy The policy governing the iteration over the selection cases.
+   * @throws IllegalArgumentException If one of the provided parameters is null.
+   * @since 3.0.0
    */
   void scheduleCardSelectionScenario(
       ObservableCardReader observableCardReader,
-      ObservableCardReader.NotificationMode notificationMode);
+      CardPresenceNotificationPolicy cardPresenceNotificationPolicy,
+      SelectionExecutionPolicy selectionExecutionPolicy);
 
   /**
    * Analyzes the responses provided by a {@link CardReaderEvent} following the insertion of a card
-   * and the execution of the card selection scenario.
+   * and the execution of the scheduled card selection scenario.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_parseScheduledCardSelectionsResponse">CardSelectionManager.parseScheduledCardSelectionsResponse</a>
+   * for the normative contract.
    *
    * @param scheduledCardSelectionsResponse The card selection scenario execution response.
    * @return A non-null reference.
@@ -173,24 +163,20 @@ public interface CardSelectionManager {
       ScheduledCardSelectionsResponse scheduledCardSelectionsResponse);
 
   /**
-   * Exports the content of the previously processed card selection scenario in string format.
-   *
-   * <p>This string can be imported into the same or another card selection manager via the method
-   * {@link #importProcessedCardSelectionScenario(String)}.
+   * Exports the content of the previously processed card selection scenario in string format, so
+   * that it can be imported into the same or another card selection manager via the method {@link
+   * #importProcessedCardSelectionScenario(String)}.
    *
    * <p>Prerequisite: the card selection scenario must first have been processed via the {@link
-   * #processCardSelectionScenario(CardReader)} or {@link
+   * #processCardSelectionScenario(CardReader, SelectionExecutionPolicy)}, {@link
+   * #processMultichannelCardSelectionScenario(CardReader, ChannelSelectionPolicy)} or {@link
    * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} method.
    *
-   * <p>Caution: if the local environment does not have the card extensions involved in the
-   * selection scenario, then methods {@link #processCardSelectionScenario(CardReader)} and {@link
-   * #parseScheduledCardSelectionsResponse(ScheduledCardSelectionsResponse)} will not be able to
-   * interpret the content of the result, and consequently, the content of the result object {@link
-   * CardSelectionResult} will not contain any active selection. It will then be necessary to export
-   * the processed scenario in order to import it and interpret it correctly by a card selection
-   * manager that has all the card extensions involved in the selection scenario.
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_exportProcessedCardSelectionScenario">CardSelectionManager.exportProcessedCardSelectionScenario</a>
+   * for the normative contract.
    *
-   * @return A non-null string.
+   * @return A non-empty string.
    * @throws IllegalStateException If the card selection scenario has not yet been processed or has
    *     failed.
    * @see #importProcessedCardSelectionScenario(String)
@@ -213,6 +199,10 @@ public interface CardSelectionManager {
    *       manager that was used to export the processed card selection scenario.
    * </ul>
    *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_CardSelectionManager_importProcessedCardSelectionScenario">CardSelectionManager.importProcessedCardSelectionScenario</a>
+   * for the normative contract.
+   *
    * @param processedCardSelectionScenario The string containing the exported processed card
    *     selection scenario.
    * @return A non-null reference.
@@ -223,4 +213,84 @@ public interface CardSelectionManager {
    * @since 1.3.0
    */
   CardSelectionResult importProcessedCardSelectionScenario(String processedCardSelectionScenario);
+
+  /**
+   * Options applied when a card is detected, used to decide which cards trigger event handler
+   * notifications.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardPresenceNotificationPolicy">CardPresenceNotificationPolicy</a>
+   * for the normative contract.
+   *
+   * @since 3.0.0
+   */
+  enum CardPresenceNotificationPolicy {
+
+    /**
+     * All cards presented to the reader are notified, regardless of the result of the selection.
+     *
+     * @since 3.0.0
+     */
+    ALWAYS,
+
+    /**
+     * Only the cards that have been successfully selected are notified, the others are ignored.
+     *
+     * @since 3.0.0
+     */
+    MATCHED_ONLY
+  }
+
+  /**
+   * Policy governing the iteration over the selection cases of a card selection scenario.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_SelectionExecutionPolicy">SelectionExecutionPolicy</a>
+   * for the normative contract.
+   *
+   * @since 3.0.0
+   */
+  enum SelectionExecutionPolicy {
+
+    /**
+     * The manager stops at the first successful selection case.
+     *
+     * @since 3.0.0
+     */
+    STOP_ON_FIRST_MATCH,
+
+    /**
+     * The manager processes every selection case regardless of intermediate successes.
+     *
+     * @since 3.0.0
+     */
+    PROCESS_ALL
+  }
+
+  /**
+   * Policy governing the use of the basic channel in a multi-channel card selection scenario.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_ChannelSelectionPolicy">ChannelSelectionPolicy</a>
+   * for the normative contract.
+   *
+   * @since 3.0.0
+   */
+  enum ChannelSelectionPolicy {
+
+    /**
+     * The basic channel may host selection cases in addition to the additional logical channels.
+     *
+     * @since 3.0.0
+     */
+    ALLOW_BASIC_CHANNEL,
+
+    /**
+     * Selection cases are placed only on additional logical channels, the basic channel is not
+     * used.
+     *
+     * @since 3.0.0
+     */
+    LOGICAL_CHANNEL_ONLY
+  }
 }

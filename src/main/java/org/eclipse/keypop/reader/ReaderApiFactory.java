@@ -16,14 +16,47 @@ import org.eclipse.keypop.reader.selection.CardSelectionManager;
 import org.eclipse.keypop.reader.selection.IsoCardSelector;
 
 /**
- * Reader API Factory.
+ * Factory used by the application to obtain instances of the public types provided by the API.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_ReaderApiFactory">ReaderApiFactory</a>
+ * for the normative contract.
  *
  * @since 2.0.0
  */
 public interface ReaderApiFactory {
 
   /**
+   * Returns the {@link CardReaderProvider} giving access to the readers available in the execution
+   * environment.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ReaderApiFactory_getCardReaderProvider">ReaderApiFactory.getCardReaderProvider</a>
+   * for the normative contract.
+   *
+   * @return A non-null reference.
+   * @since 3.0.0
+   */
+  CardReaderProvider getCardReaderProvider();
+
+  /**
+   * Returns a new instance of {@link CardDetectionSettings}.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ReaderApiFactory_createCardDetectionSettings">ReaderApiFactory.createCardDetectionSettings</a>
+   * for the normative contract.
+   *
+   * @return A new instance of {@link CardDetectionSettings}.
+   * @since 3.0.0
+   */
+  CardDetectionSettings createCardDetectionSettings();
+
+  /**
    * Returns a new instance of {@link CardSelectionManager}.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ReaderApiFactory_createCardSelectionManager">ReaderApiFactory.createCardSelectionManager</a>
+   * for the normative contract.
    *
    * @return A new instance of {@link CardSelectionManager}.
    * @since 2.0.0
@@ -33,6 +66,10 @@ public interface ReaderApiFactory {
   /**
    * Returns a new instance of {@link BasicCardSelector}.
    *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ReaderApiFactory_createBasicCardSelector">ReaderApiFactory.createBasicCardSelector</a>
+   * for the normative contract.
+   *
    * @return A new instance of {@link BasicCardSelector}.
    * @since 2.0.0
    */
@@ -40,6 +77,10 @@ public interface ReaderApiFactory {
 
   /**
    * Returns a new instance of {@link IsoCardSelector}.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_ReaderApiFactory_createIsoCardSelector">ReaderApiFactory.createIsoCardSelector</a>
+   * for the normative contract.
    *
    * @return A new instance of {@link IsoCardSelector}.
    * @since 2.0.0

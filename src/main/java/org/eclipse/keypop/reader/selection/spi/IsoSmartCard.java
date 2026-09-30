@@ -13,24 +13,41 @@ package org.eclipse.keypop.reader.selection.spi;
 
 /**
  * ISO 7816-4 smart card with which communication has been established after a selection process and
- * which is ready to receive APDUs.
+ * which is ready to receive APDUs, to be implemented and possibly extended by an ISO card
+ * extension.
  *
- * <p>The information that could be collected by the selection process, i.e. the power-on data or
- * the response to the "Select Application" command are made available.<br>
- * Both are optional but cannot be null at the same time.
- *
- * <p>Must be implemented and possibly extended by a ISO card extension to meet its specific needs.
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_IsoSmartCard">IsoSmartCard</a>
+ * for the normative contract.
  *
  * @since 2.0.0
  */
 public interface IsoSmartCard extends SmartCard {
 
   /**
-   * Gets the card data received in response to the "Select Application" command (including the
-   * status word).
+   * Returns the card data received in response to the "Select Application" command, including the
+   * status word.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_IsoSmartCard_getSelectApplicationResponse">IsoSmartCard.getSelectApplicationResponse</a>
+   * for the normative contract.
    *
    * @return Null if no selection application has been performed.
    * @since 1.0.0
    */
   byte[] getSelectApplicationResponse();
+
+  /**
+   * Returns whether this smart card is attached to the basic channel of the underlying ISO 7816-4
+   * card, or to an additional logical channel.
+   *
+   * <p>See <a
+   * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#op_IsoSmartCard_isBasicChannel">IsoSmartCard.isBasicChannel</a>
+   * for the normative contract.
+   *
+   * @return <b>true</b> if attached to the basic channel, <b>false</b> if attached to an additional
+   *     logical channel.
+   * @since 3.0.0
+   */
+  boolean isBasicChannel();
 }

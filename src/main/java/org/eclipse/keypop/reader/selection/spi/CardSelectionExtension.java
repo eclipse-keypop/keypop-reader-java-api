@@ -12,9 +12,12 @@
 package org.eclipse.keypop.reader.selection.spi;
 
 /**
- * SPI provided by a card extension, allowing to enrich a selection case with additional commands if
- * required, and to interpret the return to selection in order to build and fill the specific {@link
- * SmartCard} which acts as an image of the targeted card.
+ * SPI provided by a card extension to enrich a selection case with additional commands and to
+ * interpret the selection response in order to build the corresponding {@link SmartCard}.
+ *
+ * <p>See <a
+ * href="https://docs.terminal-api.calypsonet.org/calypsonet-terminal-reader-uml-api/3.0.0-SNAPSHOT/YYMMDD-SP-CNATerminalAPI-Reader_v3.0.0-SNAPSHOT.html#type_CardSelectionExtension">CardSelectionExtension</a>
+ * for the normative contract.
  *
  * @since 2.0.0
  */
